@@ -1,0 +1,23 @@
+一、Android基础
+1、四大组件
+Activity:
+生命周期：
+1）Q：onSaveInstanceState和onRestoreInstanceState的作用及用法
+  A: 
+    1. onSaveInstanceState    
+    作用： onSaveInstanceState 方法在Activity或Fragment即将被销毁之前调用，用来保存当前的UI状态或其他临时数据。保存的数据会被存储在一个 Bundle 对象中，系统会在合适的时候将其传递给 onRestoreInstanceState 或 onCreate 方法。
+    调用时机： 
+    Activity 即将被销毁时（例如屏幕旋转、系统资源不足等情况下）。 当 onPause() 被调用时，onSaveInstanceState 会被触发。
+    2. onRestoreInstanceState
+    作用： onRestoreInstanceState 方法用于恢复被销毁的Activity或Fragment的状态。它会在 onStart() 方法之后调用，在Activity重新创建时，将之前在 onSaveInstanceState 中保存的数据还原回来。
+    调用时机：
+    Activity 被重新创建（例如屏幕旋转或配置变化时如语言切换）。
+    在 onStart() 之前调用 onRestoreInstanceState。
+    用法： 在 onRestoreInstanceState 中，我们可以从 Bundle 中恢复之前保存的状态
+    注意：onSaveInstanceState 和 onRestoreInstanceState 只适用于处理小规模的数据保存与恢复，像数据库或长时间保存的数据应该使用更持久化的存储方案（例如SharedPreferences、文件存储、数据库等）。
+
+    onRestoreInstanceState 可能不会被调用的情况主要有：因此需要在onCreate()中，根据savedInstanceState != null，手动恢复数据
+    Activity 没有经历销毁和重新创建。
+    Activity 使用了 android:configChanges 来避免重建。
+    Activity 是通过 Intent 恢复的。
+    系统没有认为需要恢复状态（例如没有保存状态）。
