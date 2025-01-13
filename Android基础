@@ -21,3 +21,13 @@ Activity:
     Activity 使用了 android:configChanges 来避免重建。
     Activity 是通过 Intent 恢复的。
     系统没有认为需要恢复状态（例如没有保存状态）。
+
+Fragment:
+Fragment本身是一个view，它的生命周期是由activity来管理的，通过事务管理
+
+ViewPager的适配器原理
+准备适配startUpdate,准备缓存，初始化的工作
+创建适配的item数据instantiateItem
+销毁适配的item数据destroyItem
+设置当前显示的item数据setPrimaryItem
+完成适配finishUpdate
