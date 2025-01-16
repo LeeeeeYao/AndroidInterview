@@ -31,3 +31,142 @@ ViewPager的适配器原理
 销毁适配的item数据destroyItem
 设置当前显示的item数据setPrimaryItem
 完成适配finishUpdate
+
+
+RecyclerView 的工作原理：
+当 RecyclerView 首次显示时，它会调用 Adapter 的 getItemCount 方法来获取数据的数量。然后，它会根据 LayoutManager 的布局规则，计算出需要显示的视图数量，并调用 Adapter 的 onCreateViewHolder 方法来创建 ViewHolder。ViewHolder 创建完成后，RecyclerView 会调用 Adapter 的 onBindViewHolder 方法来绑定数据到 ViewHolder。
+当用户滑动 RecyclerView 时，RecyclerView 会根据滑动的距离和方向，计算出需要显示的视图数量，并调用 Adapter 的 onCreateViewHolder 方法来创建 ViewHolder。ViewHolder 创建完成后，RecyclerView 会调用 Adapter 的 onBindViewHolder 方法来绑定数据到 ViewHolder。同时，RecyclerView 会将不再显示的 ViewHolder 缓存到 Recycler 中，以便下次使用。
+当子项滑出屏幕时，其视图并不会被销毁，而是被放入一个缓存队列中，等待被重新使用。当新的子项需要显示时，RecyclerView会从缓存队列中取出之前创建的视图并重新绑定数据，从而避免了不必要的视图创建和销毁操作
+当用户停止滑动 RecyclerView 时，RecyclerView 会根据当前显示的视图数量，调用 Adapter 的 onBindViewHolder 方法来更新数据。同时，RecyclerView 会将不再显示的 ViewHolder 缓存到 Recycler 中，以便下次使用。
+总的来说，RecyclerView 的工作原理是通过 ViewHolder 来缓存视图，避免了频繁的创建和销毁视图，从而提高了性能。同时，RecyclerView 使用 Adapter 来管理数据和视图的绑定，使用 LayoutManager 来管理视图的布局，使用 Recycler 来缓存 ViewHolder，使用 ItemDecoration 来添加视图之间的间隔和装饰。这些机制使得 RecyclerView 能够高效地展示大量数据，并且具有良好的用户体验。
+
+RecyclerView是Android中用于显示大量数据集合的高级视图组件，其原理和特点主要体现在以下几个方面：
+原理
+视图复用：RecyclerView通过回收（recycling）机制来优化性能。当子项滑出屏幕时，其视图并不会被销毁，而是被放入一个缓存队列中，等待被重新使用。当新的子项需要显示时，RecyclerView会从缓存队列中取出之前创建的视图并重新绑定数据，从而避免了不必要的视图创建和销毁操作。
+ViewHolder模式：ViewHolder是RecyclerView中用于缓存子项视图的类。每个ViewHolder都持有一个子项视图的引用，从而可以在需要时快速访问和复用视图。这种模式减少了findViewById的调用次数，提高了性能。
+Adapter与LayoutManager：Adapter负责创建ViewHolder并绑定数据到ViewHolder，是连接数据源和RecyclerView的桥梁。而LayoutManager则负责测量和布局RecyclerView的子视图，并管理视图的回收和复用。
+特点
+高性能：通过视图复用和ViewHolder模式，RecyclerView能够有效减少内存使用和提高滚动性能。
+灵活性高：
+支持不同的布局管理器（如LinearLayoutManager、GridLayoutManager、StaggeredGridLayoutManager），可以实现列表、网格和瀑布流等多种布局方式。
+提供了丰富的API接口，便于扩展和自定义，如添加动画效果、设置分隔线等。
+扩展性强：
+RecyclerView的设计允许开发者轻松实现复杂的交互和动画效果。
+开发者可以自定义ViewHolder、Adapter和LayoutManager等组件，以满足特定的需求。
+官方推荐：RecyclerView是Android官方推荐的用于展示大量数据的组件，取代了早期的ListView和GridView等控件，成为Android开发中处理列表和网格数据的首选方案。
+设计模式
+桥接模式（Bridge Pattern）：
+RecyclerView通过将布局方式独立成LayoutManager，实现了对布局的定制化。这种设计方式使得RecyclerView可以灵活地适应不同的布局需求，如线性布局、网格布局、瀑布流布局等。
+组合模式（Composite Pattern）：
+RecyclerView通过dispatchLayout等方法对Item View进行布局绘制，这种组合方式使得RecyclerView能够处理复杂的视图结构，如嵌套RecyclerView等。
+适配器模式（Adapter Pattern）：
+ViewHolder作为RecyclerView与ItemView之间的桥梁，通过适配器模式将RecyclerView与ItemView联系起来。这种方式使得RecyclerView能够方便地操作ItemView，同时提高了视图的复用性和性能。
+观察者模式（Observer Pattern）：
+给ViewHolder注册观察者，当调用notifyDataSetChanged等方法时，能够重新绘制界面。这种设计模式确保了RecyclerView在数据发生变化时能够及时地更新UI。
+设计思想
+高度解耦：
+RecyclerView将布局管理、数据适配、动画效果等功能独立成不同的模块，如LayoutManager、Adapter、ItemAnimator等。这种设计思想使得RecyclerView的各个部分可以独立地进行扩展和定制，大大增强了其灵活性和可扩展性。
+插拔式体验：
+RecyclerView提供了多种LayoutManager、ItemDecoration和ItemAnimator等组件，使得开发者可以根据需求轻松地替换或定制这些组件。例如，可以通过设置不同的LayoutManager来实现不同的布局效果，如线性布局、网格布局、瀑布流布局等；通过继承ItemDecoration来绘制条目间的分割线；通过设置ItemAnimator来实现条目增删时的动画效果。
+复用性：
+RecyclerView的核心思想之一是复用性。它通过ViewHolder机制来缓存和复用ItemView，从而减少了视图的创建和销毁次数，提高了应用的性能和流畅度。
+模块化：
+RecyclerView的设计遵循了模块化的原则，将不同的功能独立成模块，并通过接口进行交互。这种设计方式不仅使得RecyclerView的代码结构更加清晰和易于维护，还方便了开发者进行扩展和定制。
+综上所述，RecyclerView的设计模式和设计思想体现了其在Android开发中的高度灵活性和可扩展性。通过运用这些设计模式和设计思想，开发者可以轻松地创建出符合需求的UI界面，并提升应用的性能和用户体验。
+
+RecyclerView 的性能优化方法：
+使用 ViewHolder：ViewHolder 是 RecyclerView 中非常重要的一个概念，它可以缓存视图，避免了频繁的创建和销毁视图，从而提高了性能。在使用 RecyclerView 时，一定要使用 ViewHolder 来缓存视图。
+避免在 onBindViewHolder 中执行耗时操作：onBindViewHolder 方法是 RecyclerView 中非常重要的一个方法，它用于绑定数据到视图上。在 onBindViewHolder 方法中，一定要避免执行耗时操作，比如网络请求、数据库查询等。如果需要执行耗时操作，可以在子线程中执行，然后通过 Handler 将结果发送到主线程中。
+使用 DiffUtil：DiffUtil 是 RecyclerView 中提供的一个工具类，它可以帮助我们比较两个数据集的差异，并只更新有变化的部分，从而提高了性能。在使用 RecyclerView 时，可以使用 DiffUtil 来比较两个数据集的差异，并只更新有变化的部分。
+使用 RecyclerViewPool：RecyclerViewPool 是 RecyclerView 中提供的一个缓存池，它可以缓存 ViewHolder，避免了频繁的创建和销毁 ViewHolder，从而提高了性能。在使用 RecyclerView 时，可以使用 RecyclerViewPool 来缓存 ViewHolder。
+使用 StaggeredGridLayoutManager 时避免过度绘制：StaggeredGridLayoutManager 是 RecyclerView 中提供的一个布局管理器，它可以实现瀑布流布局。在使用 StaggeredGridLayoutManager 时，一定要避免过度绘制，比如设置背景色、圆角等。如果需要设置背景色、圆角等，可以在子线程中执行，然后通过 Handler 将结果发送到主线程中。
+使用 LinearLayoutManager 时避免过度绘制：LinearLayoutManager 是 RecyclerView 中提供的一个布局管理器，它可以实现线性布局。在使用 LinearLayoutManager 时，一定要避免过度绘制，比如设置背景色、圆角等。如果需要设置背景色、圆角等，可以在子线程中执行，然后通过 Handler 将结果发送到主线程中。
+使用 GridLayoutManager 时避免过度绘制：GridLayoutManager 是 RecyclerView 中提供的一个布局管理器，它可以实现网格布局。在使用 GridLayoutManager 时，一定要避免过度绘制，比如设置背景色、圆角等。如果需要设置背景色、圆角等，可以在子线程中执行，然后通过 Handler 将结果发送到主线程中。
+使用 ItemDecoration 时避免过度绘制：ItemDecoration 是 RecyclerView 中提供的一个工具类，它可以用于添加分割线、间距等。在使用 ItemDecoration 时，一定要避免过度绘制，比如设置背景色、圆角等。如果需要设置背景色、圆角等，可以在子线程中执行，然后通过 Handler 将结果发送到主线程中。
+使用 RecyclerView 的缓存机制：RecyclerView 提供了缓存机制，可以缓存 ViewHolder 和 View。在使用 RecyclerView 时，可以使用缓存机制来提高性能。
+使用 RecyclerView 的预取机制：RecyclerView 提供了预取机制，可以在用户滑动 RecyclerView 之前，提前加载数据，从而提高了性能。在使用 RecyclerView 时，可以使用预取机制来提高性能。
+
+
+Handler:
+工作原理：
+https://blog.csdn.net/qq_15509421/article/details/121971053
+https://blog.csdn.net/m0_60610120/article/details/138223183
+常见问题
+Q1：Looper死循环为什么不会导致线程卡死？子线程中维护Looper在消息队列无消息的时候处理方案是怎么样的？
+1、主线程本身就是需要一直运行的，因为要处理各个View，界面变化。所以需要这个死循环来保证主线程一直执行下去，不会被退出。
+2、真正会卡死的操作是在某个消息处理的时候操作时间过长，导致掉帧、ANR，而不是loop方法本身。
+3、在主线程以外，会有其他的线程来处理接受其他进程的事件，比如Binder线程（ApplicationThread），会接受AMS发送来的事件
+4、在收到跨进程消息后，会交给主线程的Hanlder再进行消息分发。所以Activity的生命周期都是依靠主线程的Looper.loop，当收到不同Message时则采用相应措施，比如收到msg=H.LAUNCH_ACTIVITY，则调用ActivityThread.handleLaunchActivity()方法，最终执行到onCreate方法。
+5、当没有消息的时候，会阻塞在loop的queue.next()中的nativePollOnce()方法里，此时主线程会释放CPU资源进入休眠状态，直到下个消息到达或者有事务发生。所以死循环也不会特别消耗CPU资源。
+
+当消息不可用或者没有消息的时候就会阻塞在next方法，而阻塞的办法是通过pipe/epoll机制。
+
+Q2：描述下什么是epoll机制？
+epoll机制是一种IO多路复用的机制，具体逻辑就是一个进程可以监视多个描述符，当某个描述符就绪（一般是读就绪或者写就绪），能够通知程序进行相应的读写操作，这个读写操作是阻塞的。在Android中，会创建一个Linux管道（Pipe）来处理阻塞和唤醒。
+
+当消息队列为空，管道的读端等待管道中有新内容可读，就会通过epoll机制进入阻塞状态。
+当有消息要处理，就会通过管道的写端写入内容，唤醒主线程。
+Q3：关于ThreadLocal，你是怎么理解的？
+在每个线程中都有一个threadLocals变量，这个变量存储着ThreadLocal和对应的需要保存的对象。
+
+这样带来的好处就是，在不同的线程，访问同一个ThreadLocal对象，但是能获取到的值却不一样。
+
+其实就是其内部获取到的Map不同，Map和Thread绑定，所以虽然访问的是同一个ThreadLocal对象，但是访问的Map却不是同一个，所以取得值也不一样。
+
+好处：线程之间进行隔离。
+
+Q4：Message有哪几种创建方式？哪种效果更好？为什么？
+new Message和message.obtain方式，message.obtain方式更好，内部消息池会进行复用，避免创建过多对象。
+
+Q5：为什么不能在子线程更新UI？
+因为Android中的UI控件不是线程安全的，如果多线程访问UI控件那还不乱套了。
+
+那为什么不加锁呢？
+
+会降低UI访问的效率。本身UI控件就是离用户比较近的一个组件，加锁之后自然会发生阻塞，那么UI访问的效率会降低，最终反应到用户端就是这个手机有点卡。
+太复杂了。本身UI访问时一个比较简单的操作逻辑，直接创建UI，修改UI即可。如果加锁之后就让这个UI访问的逻辑变得很复杂，没必要。
+所以，Android设计出了 单线程模型 来处理UI操作，再搭配上Handler，是一个比较合适的解决方案。
+
+子线程访问UI的 崩溃原因 和 解决办法？
+崩溃发生在ViewRootImpl类的checkThread方法中，其实就是判断了当前线程 是否是 ViewRootImpl创建时候的线程，如果不是，就会崩溃。
+
+而ViewRootImpl创建的时机就是界面被绘制的时候，也就是onResume之后，所以如果在子线程进行UI更新，就会发现当前线程（子线程）和View创建的线程（主线程）不是同一个线程，发生崩溃。
+
+解决办法有三种：
+
+在新建视图的线程进行这个视图的UI更新，主线程创建View，主线程更新View。
+在ViewRootImpl创建之前进行子线程的UI更新，比如onCreate方法中进行子线程更新UI。
+子线程切换到主线程进行UI更新，比如Handler、view.post方法。
+
+Q6：为什么主线程可以直接new Handler?其它子线程可以吗？怎么做？
+可以，但要调用Looper.prepare()方法；主线程启动时候就创建了MainLooper，构造方法中默认调用了Looper.prepare()方法。
+
+Q7：一个线程有几个Looper？如何保证？又可以有几个Handler？
+一个，通过ThreadLocal中的ThreadLocal存储当前线程ID和Looper对象保证。可以有多个Handler。
+
+Looper、MessageQueue、线程是一一对应关系，而他们与Handler是可以一对多的。
+
+Q8：Handler内存泄漏的原因，其它内部类为什么没有这个问题？
+message.target持有Handler引用；内存泄漏是因为长生命周期对象持有了短生命周期对象的引用，Handler内存泄漏，内部类持有外部类的引用只是表象，源头是由于message.target持有Handler引用，导致Thread持有了Activity的引用，Activity无法及时回收。其它内部类虽然持有了外部类的引用，但只要它的实例持有对象的生命周期不大于外部类对象，就不会造成内存泄漏。
+
+Q9：Handler中生产者-消费者设计模式你理解不？
+Handler机制就是一个生产者消费者模式。可以这么理解，Handler发送消息，它就是生产者，生产的是一个个Message。Looper可以理解为消费者，在其loop()方法中，死循环从MessageQueue取出Message进行处理。而MessageQueue就是缓冲区了，Handler产生的Message放到MessageQueue中，Looper从MessageQueue取出消息。
+
+Q10：既然存在多个Handler往MessageQue中添加数据（发消息时各个Handler处于不同线程），内部如何保证安全？
+Looper创建时，会创建一个MessageQueue，且是唯一对应的
+这也就说明一个Thread，Looper，MessageQueue都是唯一对应的关系
+
+那么在添加消息时，synchronized (this) 的this 就是MessageQueue，而根据对应关系，这里加锁，其实就等于锁住了当前线程。就一个线程内算多个Handler同时添加消息，他们也会被锁限制，从而保证了消息添加的有序性，取消息同理
+
+
+多个Handler发送消息；Looper怎么知道要把消息给哪个Handler处理？
+target标志
+在Handler发送消息的时候，会把当前Handler保存到Message的target变量里，当处理消息的时候，就可以直接取出Handler并处理消息；
+
+Q11：使用Handler的postDelay()后消息队列会发生什么变化？
+无论是即时消息还是延迟消息，都是计算出具体的时间，然后作为消息的when字段进程赋值。
+
+然后在MessageQueue中找到合适的位置（安排when小到大排列），并将消息插入到MessageQueue中。
+
+这样，MessageQueue就是一个按照消息时间排列的一个链表结构。
+
