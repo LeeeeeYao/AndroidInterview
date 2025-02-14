@@ -21,6 +21,7 @@ Activity:
     Activity 使用了 android:configChanges 来避免重建。
     Activity 是通过 Intent 恢复的。
     系统没有认为需要恢复状态（例如没有保存状态）。
+2).Android面试题-Activity A跳转Activity B，再按返回键，生命周期执行的顺序? https://blog.csdn.net/u013700040/article/details/105458684
 
 Fragment:
 Fragment本身是一个view，它的生命周期是由activity来管理的，通过事务管理
