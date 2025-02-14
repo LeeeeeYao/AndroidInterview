@@ -22,6 +22,15 @@ Activity:
     Activity 是通过 Intent 恢复的。
     系统没有认为需要恢复状态（例如没有保存状态）。
 2).Android面试题-Activity A跳转Activity B，再按返回键，生命周期执行的顺序? https://blog.csdn.net/u013700040/article/details/105458684
+3）.Activity的启动流程：
+  App进程使用ActivityTaskManager作为Binder Client向SystemServer进程中的ActivityTaskMangerService发送startActivity的请求。
+  SystemServer进程中的流程比较复杂，后面会一一讲解，主要是判断需要启动的Activity所在的进程是否存在，如果存在调用realStartActivityLocked发起启动Activity，如果不存在，调用startProcess方法向Zygote进程发送启动新进程的请求。
+  Zygote进程收到请求后，fork新进程并调用ActivityThread的main初始化进程。
+  新进程启动后，会发送attachApplication（含有ApplicationThread的Binder代理）给ActivityManagerService，告诉它新进程已经启动成功了。
+  ActivityManagerService收到新进程启动成功的消息后，会进去一系列的准备工作，然后调用（中间调用了好几步才调用到）ActivityTaskSupervisor的realStartActivityLocked方法发起启动Activity。ActivityTaskSupervisor使用ApplicationThread的Binder代理向被启动的App进程发送scheduleTransaction请求。
+  被启动的App进程的binder线程（ApplicationThread）在收到请求后，通过handler向主线程发送EXECUTE_TRANSACTION消息
+  主线程在收到Message后，通过反射机制创建目标Activity，并回调Activity.onCreate()等方法。                     
+  原文链接：https://blog.csdn.net/ss520k/article/details/129147496
 
 Fragment:
 Fragment本身是一个view，它的生命周期是由activity来管理的，通过事务管理
