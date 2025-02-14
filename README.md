@@ -1,7 +1,6 @@
 # AndroidInterview
 
 1.Activity
-
 1.Activity的启动流程
 2.onSaveInstanceState(),onRestoreInstanceState的掉用时机
 3.activity的启动模式和使用场景
