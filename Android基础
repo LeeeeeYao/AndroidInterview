@@ -22,6 +22,12 @@ Activity:
     Activity 是通过 Intent 恢复的。
     系统没有认为需要恢复状态（例如没有保存状态）。
 2).Android面试题-Activity A跳转Activity B，再按返回键，生命周期执行的顺序? https://blog.csdn.net/u013700040/article/details/105458684
+    A跳转B
+    当调用startActivity时，向当前栈中添加activityB， activityA 会执行 onPause，此时 activityA 处于失去焦点但可见的状态，因为 activityB 还没开始绘制，所以activityA不会回调 onStop方法，接着 activityB 会开始执行 onCreate -> onStart -> onResume ，我们都知道Activity 是在 onResume 中开始绘制界面，当 activityB执行完 onResume后，此时 activityA 处于不可见的状态，即按图上所示，activityA 会回调 onStop 方法。这也就是在activityA 跳转 activityB 时，A的onStop 最后执行。
+    
+    B 返回 A
+    同理，在activityB中按下返回键，activityB会先执行 onPause ，此时B还处于可见状态，A 会执行 onRestart -> onStart ->  onResume ->，此时A 已经处于可见状态了，B 不可见，开始执行  onStop -> onDestroy 方法。这样解释就正确了！
+
 3）.Activity的启动流程：
   App进程使用ActivityTaskManager作为Binder Client向SystemServer进程中的ActivityTaskMangerService发送startActivity的请求。
   SystemServer进程中的流程比较复杂，后面会一一讲解，主要是判断需要启动的Activity所在的进程是否存在，如果存在调用realStartActivityLocked发起启动Activity，如果不存在，调用startProcess方法向Zygote进程发送启动新进程的请求。
