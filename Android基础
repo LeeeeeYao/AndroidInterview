@@ -9,7 +9,7 @@ Activity:
     调用时机： 
     Activity 即将被销毁时（例如屏幕旋转、系统资源不足等情况下）。 当 onPause() 被调用时，onSaveInstanceState 会被触发。
     2. onRestoreInstanceState
-    作用： onRestoreInstanceState 方法用于恢复被销毁的Activity或Fragment的状态。它会在 onStart() 方法之后调用，在Activity重新创建时，将之前在 onSaveInstanceState 中保存的数据还原回来。
+    作用： onRestoreInstanceState 方法用于恢复被销毁的Activity或Fragment的状态。它会在 onStart() 方法之前调用，在Activity重新创建时，将之前在 onSaveInstanceState 中保存的数据还原回来。
     调用时机：
     Activity 被重新创建（例如屏幕旋转或配置变化时如语言切换）。
     在 onStart() 之前调用 onRestoreInstanceState。
